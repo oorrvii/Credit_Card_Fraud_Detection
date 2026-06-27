@@ -270,7 +270,7 @@ if st.button("Analyze Transaction →", use_container_width=True, type="primary"
         st.error("Model files not found. Make sure fraud_classifier.pkl and scaler.pkl are in the same folder.")
     else:
         features = np.array([[v_vals[f'V{i}'] for i in range(1, 29)] + [amount]])
-        features[0, -1] = scaler.transform([[amount]])[0][0]
+        features = scaler.transform(features)
 
         result = model.predict(features)
 
