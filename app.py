@@ -4,13 +4,20 @@ import numpy as np
 
 st.set_page_config(page_title="FraudShield", page_icon="🛡️", layout="centered")
 
+# ── Real samples from dataset ─────────────────────────────────────────────────
 SAMPLES = {
-    "legit_1": {"label": "Online Shopping", "amount": 1240.00, "emoji": "🛍️", "sub": "₹1,240", "features": [-1.3598071,-0.0727812,2.5363467,1.3782155,-0.3383208,0.4623878,0.2395986,0.0986980,0.3637870,0.0907942,-0.5515995,-0.6178009,-0.9913898,-0.3111694,1.4681770,-0.4704005,0.2079712,0.0257906,0.4030606,0.2514120,-0.0183068,0.2778376,-0.1104838,0.0669281,0.1285394,-0.1891484,0.1335584,-0.0210531]},
-    "legit_2": {"label": "ATM Withdrawal", "amount": 500.00, "emoji": "🏧", "sub": "₹500", "features": [1.1918571,0.2661507,0.1664801,0.4481541,0.0600176,-0.0823608,-0.0788030,0.0851017,-0.2554251,-0.1669823,1.6127267,1.0651586,0.4898992,-0.1437723,0.6355581,0.4639170,-0.1148526,-0.1833366,-0.1457837,-0.0690831,-0.2251884,0.1783516,0.5077569,-0.2879237,0.0399759,-0.0197154,0.0603734,-0.1500800]},
-    "legit_3": {"label": "Restaurant Bill", "amount": 3800.00, "emoji": "🍽️", "sub": "₹3,800", "features": [-0.9932736,0.6716741,0.8085881,0.1477490,-0.7297212,-0.3552570,0.1652626,-0.1278382,0.1353592,-0.1377059,-0.4577221,-0.2830584,0.2456729,-0.3614764,0.2121751,0.2131074,0.1415211,-0.1046553,-0.0714060,0.0555940,0.0614166,-0.0615372,0.0679671,-0.0214592,0.0297429,-0.0363990,0.0180246,-0.0247251]},
-    "fraud_1": {"label": "Suspicious Transfer", "amount": 18990.00, "emoji": "⚡", "sub": "₹18,990", "features": [-2.3122265,1.9519673,-1.6098041,3.9979055,-0.5220785,-1.4265408,-2.5373073,1.3916167,-2.7700382,-2.7722739,1.8066569,-0.9467338,-0.6213090,-1.0793534,-0.1682613,1.5121419,1.0631907,-0.3573956,0.5048835,-0.4564060,-0.1518032,-0.7505001,-0.6222521,-0.0752436,-0.2254895,-0.6382088,-0.0393525,-0.2327291]},
-    "fraud_2": {"label": "Midnight Purchase", "amount": 9999.00, "emoji": "🌙", "sub": "₹9,999", "features": [-3.0435406,-3.1572426,1.0880174,2.2886436,1.3596491,-1.0933665,-1.2228892,-0.3580215,0.0765038,-0.5289668,-0.7161697,-0.5659023,0.3508930,0.9204526,-0.1974664,0.4880490,-0.1202048,0.7476621,0.4316903,-0.1720761,0.1058155,0.0530174,-0.0534453,0.0311989,-0.0476503,-0.2380388,0.0311578,-0.0256044]},
-    "fraud_3": {"label": "Duplicate Card Use", "amount": 74500.00, "emoji": "💳", "sub": "₹74,500", "features": [1.9914716,0.7135843,-1.2084556,0.2046556,0.6245019,-1.1796996,-0.5704684,-1.7237317,0.1063937,-0.5016006,-0.6933773,0.4713960,0.0489048,-0.2401802,-1.3516614,0.5765946,-0.1997796,0.5028553,-0.4575419,0.3337451,-0.3126984,-0.0399621,0.0657549,-0.0393473,0.0228404,0.0484791,-0.1000181,0.0342699]},
+    "legit_1": {"label": "Online Shopping", "amount": 149.62, "emoji": "🛍️", "sub": "$149.62",
+        "features": [-1.3598071336738,-0.0727811733098497,2.53634673796914,1.37815522427443,-0.338320769942518,0.462387777762292,0.239598554061257,0.0986979012610507,0.363786969611213,0.0907941719789316,-0.551599533260813,-0.617800855762348,-0.991389847235408,-0.311169353699879,1.46817697209427,-0.470400525259478,0.207971241929242,0.0257905801985591,0.403992960255733,0.251412098239705,-0.018306777944153,0.277837575558899,-0.110473910188767,0.0669280749146731,0.128539358273528,-0.189114843888824,0.133558376740387,-0.0210530534538215]},
+    "legit_2": {"label": "ATM Withdrawal", "amount": 2.69, "emoji": "🏧", "sub": "$2.69",
+        "features": [1.19185711131486,0.26615071205963,0.16648011335321,0.448154078460911,0.0600176492822243,-0.0823608088155687,-0.0788029833323113,0.0851016549148104,-0.255425128109186,-0.166974414004614,1.61272666105479,1.06523531137287,0.48909501589608,-0.143772296441519,0.635558093258208,0.463917041022171,-0.114804663102346,-0.183361270123994,-0.145783041325259,-0.0690831352230203,-0.225775248033138,-0.638671952771851,0.101288021253234,-0.339846475529127,0.167170404418143,0.125894532368176,-0.0089830991432281,0.0147241691924927]},
+    "legit_3": {"label": "Restaurant Bill", "amount": 378.66, "emoji": "🍽️", "sub": "$378.66",
+        "features": [-1.35835406159823,-1.34016307473609,1.77320934263119,0.379779593034328,-0.503198133318193,1.80049938079263,0.791460956450422,0.247675786588991,-1.51465432260583,0.207642865216696,0.624501459424895,0.066083685268831,0.717292731410831,-0.165945922763554,2.34586494901581,-2.89008319444231,1.10996937869599,-0.121359313195888,-2.26185709530414,0.524979725224404,0.247998153469754,0.771679401917229,0.909412262347719,-0.689280956490685,-0.327641833735251,-0.139096571514147,-0.0553527940384261,-0.0597518405929204]},
+    "fraud_1": {"label": "Suspicious Transfer", "amount": 0.0, "emoji": "⚡", "sub": "$0.00",
+        "features": [-2.3122265423263,1.95199201064158,-1.60985073229769,3.9979055875468,-0.522187864667764,-1.42654531920595,-2.53738730624579,1.39165724829804,-2.77008927719433,-2.77227214465915,3.20203320709635,-2.89990738849473,-0.595221881324605,-4.28925378244217,0.389724120274487,-1.14074717980657,-2.83005567450437,-0.0168224681808257,0.416955705037907,0.126910559061474,0.517232370861764,-0.0350493686052974,-0.465211076182388,0.320198198514526,0.0445191674731724,0.177839798284401,0.261145002567677,-0.143275874698919]},
+    "fraud_2": {"label": "Midnight Purchase", "amount": 529.0, "emoji": "🌙", "sub": "$529.00",
+        "features": [-3.0435406239976,-3.15730712090228,1.08846277997285,2.2886436183814,1.35980512966107,-1.06482252298131,0.325574266158614,-0.0677936531906277,-0.270952836226548,-0.838586564582682,-0.414575448285725,-0.503140859566824,0.676501544635863,-1.69202893305906,2.00063483909015,0.666779695901966,0.599717413841732,1.72532100745514,0.283344830149495,2.10233879259444,0.661695924845707,0.435477208966341,1.37596574254306,-0.293803152734021,0.279798031841214,-0.145361714815161,-0.252773122530705,0.0357642251788156]},
+    "fraud_3": {"label": "Duplicate Card Use", "amount": 239.93, "emoji": "💳", "sub": "$239.93",
+        "features": [-2.30334956758553,1.759247460267,-0.359744743330052,2.33024305053917,-0.821628328375422,-0.0757875706194599,0.562319782266954,-0.399146578487216,-0.238253367661746,-1.52541162656194,2.03291215755072,-6.56012429505962,0.0229373234890961,-1.47010153611197,-0.698826068579047,-2.28219382856251,-4.78183085597533,-2.61566494476124,-1.33444106667307,-0.430021867171611,-0.294166317554753,-0.932391057274991,0.172726295799422,-0.0873295379700724,-0.156114264651172,-0.542627889040196,0.0395659889264757,-0.153028796529788]},
 }
 
 @st.cache_resource
@@ -27,211 +34,272 @@ try:
 except:
     loaded = False
 
-st.markdown("""
+# ── Theme toggle ──────────────────────────────────────────────────────────────
+if "dark" not in st.session_state:
+    st.session_state.dark = False
+
+col_toggle = st.columns([6, 1])
+with col_toggle[1]:
+    if st.button("🌙" if not st.session_state.dark else "☀️"):
+        st.session_state.dark = not st.session_state.dark
+        st.rerun()
+
+dark = st.session_state.dark
+
+# ── Theme tokens ──────────────────────────────────────────────────────────────
+if dark:
+    BG         = "#0f1117"
+    CARD       = "#1a1f2e"
+    BORDER     = "#252d3d"
+    TEXT       = "#e2e8f0"
+    MUTED      = "#475569"
+    ACCENT     = "#3b82f6"
+    ACCENT_BG  = "#1e3a5f"
+    METRIC_BG  = "#141928"
+    BTN_BG     = "#1a1f2e"
+    BTN_HVR    = "#252d3d"
+    DIVIDER    = "#1e2535"
+    HOW_NUM    = "#252d3d"
+    SUCCESS_BG = "#052e16"
+    SUCCESS_BR = "#166534"
+    SUCCESS_TT = "#4ade80"
+    SUCCESS_TX = "#86efac"
+    DANGER_BG  = "#2d0a0a"
+    DANGER_BR  = "#991b1b"
+    DANGER_TT  = "#f87171"
+    DANGER_TX  = "#fca5a5"
+else:
+    BG         = "#f8fafc"
+    CARD       = "#ffffff"
+    BORDER     = "#e2e8f0"
+    TEXT       = "#0f172a"
+    MUTED      = "#64748b"
+    ACCENT     = "#1d4ed8"
+    ACCENT_BG  = "#eff6ff"
+    METRIC_BG  = "#ffffff"
+    BTN_BG     = "#ffffff"
+    BTN_HVR    = "#f1f5f9"
+    DIVIDER    = "#e2e8f0"
+    HOW_NUM    = "#e2e8f0"
+    SUCCESS_BG = "#f0fdf4"
+    SUCCESS_BR = "#86efac"
+    SUCCESS_TT = "#15803d"
+    SUCCESS_TX = "#166534"
+    DANGER_BG  = "#fff1f2"
+    DANGER_BR  = "#fca5a5"
+    DANGER_TT  = "#b91c1c"
+    DANGER_TX  = "#991b1b"
+
+st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&display=swap');
 
-html, body, [class*="css"] {
+html, body, [class*="css"] {{
     font-family: 'Manrope', sans-serif !important;
-}
+    background-color: {BG} !important;
+    color: {TEXT} !important;
+}}
 
-.stApp { background: #f7f8fa; }
+.stApp {{ background: {BG} !important; }}
 
-.header {
-    padding: 2.5rem 0 1rem;
+.header {{
+    padding: 1rem 0 1rem;
     text-align: center;
-}
+}}
 
-.badge {
+.badge {{
     display: inline-block;
-    background: #e8f0fe;
-    color: #1a56db;
-    font-size: 0.7rem;
+    background: {ACCENT_BG};
+    color: {ACCENT};
+    font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
-    padding: 0.28rem 0.75rem;
+    padding: 0.28rem 0.85rem;
     border-radius: 20px;
     margin-bottom: 1rem;
-}
+    border: 1px solid {ACCENT}33;
+}}
 
-.title {
-    font-size: 2.6rem;
+.title {{
+    font-size: 2.8rem;
     font-weight: 800;
-    color: #0f172a;
+    color: {TEXT};
     letter-spacing: -0.04em;
     line-height: 1.1;
     margin-bottom: 0.5rem;
-}
+}}
 
-.title span { color: #1a56db; }
+.title span {{ color: {ACCENT}; }}
 
-.subtitle {
-    font-size: 0.9rem;
-    color: #64748b;
+.subtitle {{
+    font-size: 0.88rem;
+    color: {MUTED};
     max-width: 380px;
     margin: 0 auto;
     line-height: 1.7;
-}
+}}
 
-.metrics {
+.metrics {{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
-    background: #e2e8f0;
-    border: 1px solid #e2e8f0;
+    background: {BORDER};
+    border: 1px solid {BORDER};
     border-radius: 14px;
     overflow: hidden;
-    margin: 2rem 0;
-}
+    margin: 1.8rem 0;
+}}
 
-.metric {
-    background: #ffffff;
-    padding: 1.2rem 1rem;
+.metric {{
+    background: {METRIC_BG};
+    padding: 1.1rem 1rem;
     text-align: center;
-}
+}}
 
-.metric-val {
+.metric-val {{
     font-size: 1.75rem;
     font-weight: 800;
-    color: #0f172a;
+    color: {TEXT};
     letter-spacing: -0.03em;
     line-height: 1;
     margin-bottom: 0.25rem;
-}
+}}
 
-.metric-val span { color: #1a56db; }
-
-.metric-lbl {
-    font-size: 0.65rem;
+.metric-val span {{ color: {ACCENT}; }}
+.metric-lbl {{
+    font-size: 0.63rem;
     font-weight: 600;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: #94a3b8;
-}
+    color: {MUTED};
+}}
 
-.section-title {
-    font-size: 0.7rem;
+.section-title {{
+    font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #94a3b8;
-    margin: 1.8rem 0 0.8rem;
-}
+    color: {MUTED};
+    margin: 1.6rem 0 0.7rem;
+}}
 
-.result-legit {
-    background: #f0fdf4;
-    border: 1.5px solid #86efac;
+.result-legit {{
+    background: {SUCCESS_BG};
+    border: 1.5px solid {SUCCESS_BR};
     border-radius: 14px;
     padding: 2rem;
     text-align: center;
     margin-top: 1.2rem;
-}
+}}
 
-.result-fraud {
-    background: #fff1f2;
-    border: 1.5px solid #fca5a5;
+.result-fraud {{
+    background: {DANGER_BG};
+    border: 1.5px solid {DANGER_BR};
     border-radius: 14px;
     padding: 2rem;
     text-align: center;
     margin-top: 1.2rem;
-}
+}}
 
-.result-icon { font-size: 2.5rem; margin-bottom: 0.5rem; display: block; }
+.result-icon {{ font-size: 2.4rem; margin-bottom: 0.5rem; display: block; }}
 
-.result-tag {
-    font-size: 0.65rem;
+.result-tag {{
+    font-size: 0.63rem;
     font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     margin-bottom: 0.35rem;
-}
+}}
 
-.tag-legit { color: #16a34a; }
-.tag-fraud { color: #dc2626; }
+.tag-legit {{ color: {SUCCESS_TT}; }}
+.tag-fraud {{ color: {DANGER_TT}; }}
 
-.result-title {
+.result-title {{
     font-size: 2rem;
     font-weight: 800;
     letter-spacing: -0.03em;
     margin-bottom: 0.4rem;
-}
+}}
 
-.rtitle-legit { color: #15803d; }
-.rtitle-fraud { color: #b91c1c; }
+.rtitle-legit {{ color: {SUCCESS_TT}; }}
+.rtitle-fraud {{ color: {DANGER_TT}; }}
+.result-desc {{ font-size: 0.84rem; color: {MUTED}; line-height: 1.6; }}
 
-.result-desc { font-size: 0.85rem; color: #64748b; line-height: 1.6; }
-
-.howgrid {
+.howgrid {{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 0.8rem;
-    margin-top: 0.8rem;
-}
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}}
 
-.howcard {
-    background: #ffffff;
-    border: 1px solid #e2e8f0;
+.howcard {{
+    background: {CARD};
+    border: 1px solid {BORDER};
     border-radius: 12px;
     padding: 1.1rem 1rem;
-}
+}}
 
-.hownum {
+.hownum {{
     font-size: 1.6rem;
     font-weight: 800;
-    color: #e2e8f0;
+    color: {HOW_NUM};
     letter-spacing: -0.04em;
-    margin-bottom: 0.5rem;
-}
+    margin-bottom: 0.4rem;
+}}
 
-.howtitle {
+.howtitle {{
     font-size: 0.8rem;
     font-weight: 700;
-    color: #0f172a;
-    margin-bottom: 0.3rem;
-}
+    color: {TEXT};
+    margin-bottom: 0.25rem;
+}}
 
-.howbody { font-size: 0.75rem; color: #94a3b8; line-height: 1.55; }
+.howbody {{ font-size: 0.74rem; color: {MUTED}; line-height: 1.55; }}
 
-.disc {
-    font-size: 0.68rem;
-    color: #cbd5e1;
+.disc {{
+    font-size: 0.65rem;
+    color: {BORDER};
     text-align: center;
     margin-top: 2.5rem;
     line-height: 1.8;
-}
+}}
 
-div[data-testid="column"] .stButton > button {
-    background: #ffffff !important;
-    color: #0f172a !important;
-    border: 1px solid #e2e8f0 !important;
+div[data-testid="column"] .stButton > button {{
+    background: {BTN_BG} !important;
+    color: {TEXT} !important;
+    border: 1px solid {BORDER} !important;
     border-radius: 12px !important;
     font-family: 'Manrope', sans-serif !important;
     font-weight: 600 !important;
-    font-size: 0.82rem !important;
-    padding: 0.7rem 0.5rem !important;
+    font-size: 0.8rem !important;
+    padding: 0.65rem 0.5rem !important;
     width: 100% !important;
-    transition: all 0.15s ease !important;
     line-height: 1.4 !important;
-}
+    transition: all 0.15s ease !important;
+}}
 
-div[data-testid="column"] .stButton > button:hover {
-    border-color: #1a56db !important;
-    color: #1a56db !important;
+div[data-testid="column"] .stButton > button:hover {{
+    border-color: {ACCENT} !important;
+    color: {ACCENT} !important;
     transform: translateY(-1px) !important;
-}
+}}
+
+hr {{ border-color: {DIVIDER} !important; }}
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
+# ── Header ────────────────────────────────────────────────────────────────────
+st.markdown(f"""
 <div class="header">
-    <div class="badge">ML-Powered · Random Forest</div>
+    <div class="badge">ML-Powered · Random Forest · Real-time</div>
     <div class="title">Fraud<span>Shield</span></div>
-    <div class="subtitle">Pick a sample transaction to see the model classify it as legitimate or fraudulent in real time.</div>
+    <div class="subtitle">Pick a sample transaction to see the model classify it as legitimate or fraudulent instantly.</div>
 </div>
 """, unsafe_allow_html=True)
 
-st.markdown("""
+# ── Metrics ───────────────────────────────────────────────────────────────────
+st.markdown(f"""
 <div class="metrics">
     <div class="metric"><div class="metric-val"><span>93</span>%</div><div class="metric-lbl">Precision</div></div>
     <div class="metric"><div class="metric-val"><span>0.86</span></div><div class="metric-lbl">F1 Score</div></div>
@@ -239,26 +307,28 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
+# ── Transaction buttons ───────────────────────────────────────────────────────
 selected = None
 
 st.markdown('<div class="section-title">✓ Legitimate Transactions</div>', unsafe_allow_html=True)
 c1, c2, c3 = st.columns(3)
 with c1:
-    if st.button("🛍️ Online Shopping\n₹1,240", use_container_width=True): selected = "legit_1"
+    if st.button("🛍️ Online Shopping\n$149.62", use_container_width=True): selected = "legit_1"
 with c2:
-    if st.button("🏧 ATM Withdrawal\n₹500", use_container_width=True): selected = "legit_2"
+    if st.button("🏧 ATM Withdrawal\n$2.69", use_container_width=True): selected = "legit_2"
 with c3:
-    if st.button("🍽️ Restaurant Bill\n₹3,800", use_container_width=True): selected = "legit_3"
+    if st.button("🍽️ Restaurant Bill\n$378.66", use_container_width=True): selected = "legit_3"
 
 st.markdown('<div class="section-title">⚠ Suspicious Transactions</div>', unsafe_allow_html=True)
 c4, c5, c6 = st.columns(3)
 with c4:
-    if st.button("⚡ Suspicious Transfer\n₹18,990", use_container_width=True): selected = "fraud_1"
+    if st.button("⚡ Suspicious Transfer\n$0.00", use_container_width=True): selected = "fraud_1"
 with c5:
-    if st.button("🌙 Midnight Purchase\n₹9,999", use_container_width=True): selected = "fraud_2"
+    if st.button("🌙 Midnight Purchase\n$529.00", use_container_width=True): selected = "fraud_2"
 with c6:
-    if st.button("💳 Duplicate Card\n₹74,500", use_container_width=True): selected = "fraud_3"
+    if st.button("💳 Duplicate Card\n$239.93", use_container_width=True): selected = "fraud_3"
 
+# ── Result ────────────────────────────────────────────────────────────────────
 if selected:
     if not loaded:
         st.error("Model files not found. Make sure fraud_classifier.pkl and scaler.pkl are present.")
@@ -274,7 +344,7 @@ if selected:
                 <span class="result-icon">✅</span>
                 <div class="result-tag tag-legit">Transaction Cleared</div>
                 <div class="result-title rtitle-legit">Legitimate</div>
-                <div class="result-desc"><strong>{txn['emoji']} {txn['label']} · {txn['sub']}</strong> has been analyzed and classified as a legitimate transaction. No fraudulent patterns detected.</div>
+                <div class="result-desc"><strong>{txn['emoji']} {txn['label']} · {txn['sub']}</strong> — No fraudulent patterns detected. Transaction is safe to process.</div>
             </div>
             """, unsafe_allow_html=True)
         else:
@@ -283,16 +353,17 @@ if selected:
                 <span class="result-icon">🚨</span>
                 <div class="result-tag tag-fraud">Fraud Detected</div>
                 <div class="result-title rtitle-fraud">Fraudulent</div>
-                <div class="result-desc"><strong>{txn['emoji']} {txn['label']} · {txn['sub']}</strong> has been flagged as a fraudulent transaction. Immediate review recommended.</div>
+                <div class="result-desc"><strong>{txn['emoji']} {txn['label']} · {txn['sub']}</strong> — Flagged as a fraudulent transaction. Immediate review recommended.</div>
             </div>
             """, unsafe_allow_html=True)
 
+# ── How it works ──────────────────────────────────────────────────────────────
 st.markdown("---")
 st.markdown('<div class="section-title">How it works</div>', unsafe_allow_html=True)
-st.markdown("""
+st.markdown(f"""
 <div class="howgrid">
-    <div class="howcard"><div class="hownum">01</div><div class="howtitle">Training Data</div><div class="howbody">Trained on 284,807 real transactions from the ULB Credit Card Fraud Dataset on Kaggle.</div></div>
-    <div class="howcard"><div class="hownum">02</div><div class="howtitle">Model</div><div class="howbody">Random Forest with balanced class weights handles the extreme 0.17% fraud imbalance.</div></div>
+    <div class="howcard"><div class="hownum">01</div><div class="howtitle">Training data</div><div class="howbody">Trained on 284,807 real transactions from the ULB Credit Card Fraud Dataset on Kaggle.</div></div>
+    <div class="howcard"><div class="hownum">02</div><div class="howtitle">Model</div><div class="howbody">Random Forest with balanced class weights to handle the extreme 0.17% fraud imbalance.</div></div>
     <div class="howcard"><div class="hownum">03</div><div class="howtitle">Result</div><div class="howbody">93% precision — when the model flags fraud, it's almost always a real fraudulent transaction.</div></div>
 </div>
 """, unsafe_allow_html=True)
